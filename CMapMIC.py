@@ -33,11 +33,19 @@ colorbar()
 # put the major ticks at the middle of each cell                                                                                                               
 ax.set_xticks(np.arange(data.shape[0])+0.5, minor=False)
 ax.set_yticks(np.arange(data.shape[1])+0.5, minor=False)
-.png',dpi=500)                                                                                                                                                 
+
+# want a more natural, table-like display                                                                                                                      
+fig.suptitle('Correlation Map via Mutual Information Coefficient between 250 Auxiliary Channels', fontsize=25, fontweight='bold')
+ax.invert_yaxis()
+ax.xaxis.tick_top()
+plt.xticks(rotation=90)
+ax.set_xticklabels(row_labels, minor=False, fontsize=3)
+ax.set_yticklabels(column_labels, minor=False, fontsize=3)
+fig.savefig('CMapNMICG.png',dpi=500)
 #plt.show()                                                                                                                                                    
-print 'All Jobs Done!'                                                                                                                                         
-                                                                                                                                                               
+print 'All Jobs Done!'
+
 #pcolor(data, cmap=new_map)                                                                                                                                    
 #colorbar()                                                                                                                                                    
 #savefig('map.png')                                                                                                                                            
-#show()                                                                                                                                                        
+#show() 
