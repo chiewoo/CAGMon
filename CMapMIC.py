@@ -7,7 +7,7 @@ import numpy as np
 #Create new colormap, with white for zero                                                                                                                      
 #(can also take RGB values, like (255,255,255):                                                                                                                
 
-dat = np.loadtxt('MaxRedMatrixNMICG_th0.8.txt')
+dat = np.loadtxt('MaxRedMatrixNMICG.txt')
 #dat2= np.nan_to_num(dat)                                                                                                                                      
 #data=(dat2-np.min(dat2))/np.max(dat2-np.min(dat2))                                                                                                            
 #data = abs(dat)/np.max(abs(dat))                                                                                                                              
