@@ -223,8 +223,11 @@ else:
 # =============================================================================
 
 print 'Drawing correlation matrix map...'                                                    
-                                                                                                
-dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixNMIC'+filename+'.txt')
+                              
+if thv == 0.0:
+    dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixNMIC'+filename+'.txt')
+else:
+    dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixNMIC'+filename+'_th'+str(thv)+'.txt')
 
 ###
 # if NaN appears, set to be zero
