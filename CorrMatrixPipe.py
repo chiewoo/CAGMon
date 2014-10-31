@@ -47,7 +47,7 @@ import os
 import glob
 import hotshot, hotshot.stats
 import sys
-import matplotlib
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from pylab import *
@@ -257,7 +257,7 @@ colorbar()
                                                                                                                                                     
 ax.set_xticks(np.arange(data.shape[0])+0.5, minor=False)
 ax.set_yticks(np.arange(data.shape[1])+0.5, minor=False)
-
+mpl.rc('text', usetex=False)
 fig.suptitle('Correlation Map via Mutual Information Coefficient between 250 Auxiliary Channels', fontsize=25, fontweight='bold')
 ax.invert_yaxis()
 ax.xaxis.tick_top()
