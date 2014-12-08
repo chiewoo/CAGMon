@@ -106,6 +106,7 @@ num_chan=opts.number_channels
 attrib = opts.number_attribute
 thv = opts.threshold
 GPS = opts.gps_time
+nfilename='_'.join(opts.fname1.split('_')[-2:])
 
 if isdir(output_dir):
     print "Directory exists:", output_dir
@@ -122,9 +123,9 @@ else:
     print "Creating directory:", log_dir
     makedirs(log_dir)
 
-sys.stdout = Log(sys.stdout, output_dir+'/'+'MIC_Report_'+str(GPS)+'.log')
+sys.stdout = Log(sys.stdout, output_dir+'/'+'PCC_Report_'+str(GPS)+'_'+nfilename+'.log')
 
-profile_filename=log_dir+'/'+'Profiling_'+str(GPS)+'.result'
+profile_filename=log_dir+'/'+'Profiling_'+str(GPS)+'_'+nfilename+'.result'
 prof=hotshot.Profile(profile_filename)
 prof.start()
 
@@ -132,7 +133,7 @@ prof.start()
 f1=np.loadtxt(input_file1+'.txt')
 f2=np.loadtxt(input_file2+'.txt')
 
-Mdim=len(f1.T)
+Mdim=len(f1)
 pcc=np.zeros((Mdim, Mdim))
 
 # =============================================================================
@@ -145,10 +146,10 @@ print 'Computing PearsonR and generating correlation matrix...'
 for i in range(Mdim):
 #    sys.stdout.write(".")
     for j in range(Mdim):
-        pcc[i][j] = sp.stats.pearsonr(f1.T[i],f2.T[j])[0]
+        pcc[i][j] = abs(sp.stats.pearsonr(f1[i],f2[j])[0])
         sys.stdout.write(".")
-        g=open(output_dir+'/'+'CorrMatrixPcc_'+str(Mdim)+'_'+str(GPS)+'.txt','a')
-        if j==Mdim:
+        g=open(output_dir+'/'+'CorrMatrixPcc_'+str(Mdim)+'_'+str(GPS)+'_'+nfilename+'.txt','a')
+        if j==Mdim-1:
             g.write(str(pcc[i][j]))
             g.write('\n')
         else:
@@ -162,12 +163,12 @@ for i in range(Mdim):
 #                           & Generate reduced matrix
 #                                                                                                                                
 # =============================================================================
-f=np.loadtxt(output_dir+'/'+'CorrMatrixPcc_'+str(Mdim)+'_'+str(GPS)+'.txt').reshape([Mdim,Mdim,])
+f=np.loadtxt(output_dir+'/'+'CorrMatrixPcc_'+str(Mdim)+'_'+str(GPS)+'_'+nfilename+'.txt').reshape([Mdim,Mdim,])
 print 'Selecting maximum values and generating reduced matrix...'
 for i in range(0,len(f)/attrib):
     for j in range(0,len(f)/attrib):
         F=f[attrib*i:attrib*i+attrib, attrib*j:attrib*j+attrib]
-        k=open(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'.txt','a')
+        k=open(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_'+nfilename+'.txt','a')
         MaxPCC=np.max(F)
         if j == len(f)/attrib-1:
             k.write(str(MaxPCC))
@@ -186,8 +187,8 @@ for i in range(0,len(f)/attrib):
 if thv == 0.0 :
     pass
 else:
-    M=np.loadtxt(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'.txt')
-    f=open(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_th'+str(thv)+'.txt','a')
+    M=np.loadtxt(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_'+nfilename+'.txt')
+    f=open(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_'+nfilename+'_th'+str(thv)+'.txt','a')
     for i in range(len(M)):
         for j in range(len(M)):
             if j==len(M)-1:
@@ -205,7 +206,7 @@ else:
                     f.write('0.0')
                     f.write(' ')
     f.close()
-    g=open(output_dir+'/'+'GetIndexThrshd_'+str(GPS)+'_th'+str(thv)+'.txt','a')
+    g=open(output_dir+'/'+'GetIndexThrshd_'+str(GPS)+'_'+nfilename+'_th'+str(thv)+'.txt','a')
     for i in range(len(M)):
         for j in range(len(M)):
             if i==j:
@@ -231,9 +232,9 @@ else:
 print 'Drawing correlation matrix map...'                                                    
                               
 if thv == 0.0:
-    dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'.txt')
+    dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_'+nfilename+'.txt')
 else:
-    dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_th'+str(thv)+'.txt')
+    dat = np.loadtxt(output_dir+'/'+'MaxRedMatrixPCC_'+str(GPS)+'_'+nfilename+'_th'+str(thv)+'.txt')
 
 ###
 # if NaN appears, set to be zero
@@ -268,12 +269,12 @@ mpl.rc('text', usetex=False)
 fig.suptitle('Correlation Matrix via PearsonCorrelation  Coefficient between SEI and GW channels of CLIO', fontsize=25, fontweight='bold')
 ax.invert_yaxis()
 ax.xaxis.tick_top()
-plt.ylabel(str(GPS)+'_GW_fs2048', fontsize=20)
-plt.xlabel(str(GPS)+'_SEI_fs2048', fontsize=20)
+plt.ylabel(str(GPS)+'GW'+nfilename, fontsize=20)
+plt.xlabel(str(GPS)+'SEI'+nfilename, fontsize=20)
 plt.xticks(rotation=90)
 ax.set_xticklabels(row_labels, minor=False, fontsize=15)
 ax.set_yticklabels(column_labels, minor=False, fontsize=15)
-fig.savefig(output_dir+'/'+'CMatrixPCC_SEI_GW_CLIO_FDA_'+str(GPS)+'.png',dpi=256)
+fig.savefig(output_dir+'/'+'CMatrixPCC_SEI_GW_CLIO_'+str(GPS)+'_'+nfilename+'.png',dpi=256)
 #plt.show()                            
 
 print 'ALL JOBS DONE!'
