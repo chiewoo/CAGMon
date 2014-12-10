@@ -143,9 +143,13 @@ f1=np.loadtxt(input_file1+'.txt')
 f2=np.loadtxt(input_file2+'.txt')
 
 if len(f1) > 100:
- f1=f1.T
+    f1=f1.T
 else:
- pass
+    pass
+if len(f2) > 100:
+    f2=f2.T
+else:
+    pass
 
 Mdim=len(f1)
 Mat=np.zeros((Mdim, Mdim))
