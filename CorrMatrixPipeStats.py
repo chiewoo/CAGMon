@@ -23,6 +23,7 @@
 #                    - Justify the data format (Row/Column)
 #                b) Compute Options:
 #                    - Maximal Information Coefficient
+#                    - Normalized Mutual Information Score
 #                    - Pearson's Correlation Coefficient
 #                    - Kendall's Tau Correlation
 #                c) Select Max Value among Atrributes
@@ -59,6 +60,7 @@ from pylab import *
 from scipy.stats import pearsonr
 from scipy.stats import kendalltau
 from minepy import MINE
+from sklearn.metrics.cluster import normalized_mutual_info_score
 from data_process import feat_remover
 from data_process import file_splitter
 from data_process import null_remover
@@ -97,7 +99,7 @@ parser.add_option("-n", "--number-channels", action="store", type="int", default
 parser.add_option("-a", "--number-attribute", action="store", type="int", default="5", help="NUmber of Attribute")
 parser.add_option("-t", "--threshold", action="store", type="float", default="0.0", help="Threshold value of Correlation between 0.0 and 1.0")
 parser.add_option("-g", "--gps-time", action="store", type="int", default="00000", help="GPS time")
-parser.add_option("-A","--algorithm", action="store", type="string", default="mic", help="MIC, KTau, PCC")
+parser.add_option("-A","--algorithm", action="store", type="string", default="mic", help="MIC, KTau, PCC, NMIS")
 
 (opts,files)=parser.parse_args()
 filename1   = '.'.join(((opts.fname1.split('/'))[-1].split('.'))[:-1])
@@ -131,9 +133,9 @@ else:
     print "Creating directory:", log_dir
     makedirs(log_dir)
 
-sys.stdout = Log(sys.stdout, output_dir+'/'+'MIC_Report_'+str(GPS)+'_'+nfilename+'.log')
+sys.stdout = Log(sys.stdout, output_dir+'/'+mla+'_Report_'+str(GPS)+'_'+nfilename+'.log')
 
-profile_filename=log_dir+'/'+'Profiling_'+str(GPS)+'_'+nfilename+'.result'
+profile_filename=log_dir+'/'+'Profiling_'+mla+'_'+str(GPS)+'_'+nfilename+'.result'
 prof=hotshot.Profile(profile_filename)
 prof.start()
 
@@ -156,7 +158,7 @@ Mat=np.zeros((Mdim, Mdim))
 
 # =============================================================================
 #
-#                    Compute MIC, PCC, KTau Algorithm
+#                    Compute MIC, PCC, KTau, NMIS Algorithm
 #                      & Generate Correlation Matrix
 #
 # =============================================================================
@@ -170,6 +172,8 @@ for i in range(Mdim):
             Mat[i][j] = pearsonr(f1[i],f2[j])[0]
         elif mla == 'KTau':
             Mat[i][j] = kendalltau(f1[i], f2[j])[0]
+        elif mla == 'NMIS':
+            Mat[i][j] = normalized_mutual_info_score(f1[i],f2[j])
         sys.stdout.write(".")
         g=open(output_dir+'/'+'CorrMatrix_'+mla+'_'+str(Mdim)+'_'+str(GPS)+'_'+nfilename+'.txt','a')
         if j==Mdim:
