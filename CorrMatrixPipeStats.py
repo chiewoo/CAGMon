@@ -285,12 +285,19 @@ lbsdat=lbs.readlines()
 
 column_labels = lbsdat
 row_labels = lbsdat
-                                                                                                                                                    
+
+if Mdim/attrib > 50:
+    egc='k'
+else:
+    egc='None'
+
 fig, ax = plt.subplots()
 fig.set_size_inches(24,20)
-heatmap = pcolor(data, cmap=new_map,edgecolors='k')
+heatmap = pcolor(data, cmap=new_map,edgecolors=egc)
 colorbar()
-                                                                                                                                                    
+
+ftsize=int(round(-0.05*(Mdim/attrib - 250)+3))
+
 ax.set_xticks(np.arange(data.shape[0])+0.5, minor=False)
 ax.set_yticks(np.arange(data.shape[1])+0.5, minor=False)
 mpl.rc('text', usetex=False)
@@ -300,8 +307,8 @@ ax.xaxis.tick_top()
 plt.ylabel(str(GPS)+'_GW_'+nfilename, fontsize=20)
 plt.xlabel(str(GPS)+'_SEI_'+nfilename, fontsize=20)
 plt.xticks(rotation=90)
-ax.set_xticklabels(row_labels, minor=False, fontsize=15)
-ax.set_yticklabels(column_labels, minor=False, fontsize=15)
+ax.set_xticklabels(row_labels, minor=False, fontsize=ftsize)
+ax.set_yticklabels(column_labels, minor=False, fontsize=ftsize)
 fig.savefig(output_dir+'/'+'CMatrix_'+mla+'_SEI_GW_CLIO_'+str(GPS)+'_'+nfilename+'.png',dpi=256)
 #plt.show()                            
 
