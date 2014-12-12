@@ -139,17 +139,17 @@ prof.start()
 
 mine=MINE(alpha=0.6, c=15)
 
-f1=np.loadtxt(input_file1+'.txt')
-f2=np.loadtxt(input_file2+'.txt')
+f_input1=np.loadtxt(input_file1+'.txt')
+f_input2=np.loadtxt(input_file2+'.txt')
 
-if len(f1) > 100:
-    f1=f1.T
+if len(f_input1) <  len(f_input1.T):
+    f1=f_input1
 else:
-    pass
-if len(f2) > 100:
-    f2=f2.T
+    f1=f_input1.T
+if len(f_input2) < len(f_input2.T):
+    f2=f_input2
 else:
-    pass
+    f2=f_input2.T
 
 Mdim=len(f1)
 Mat=np.zeros((Mdim, Mdim))
