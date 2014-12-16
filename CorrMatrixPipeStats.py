@@ -176,7 +176,7 @@ for i in range(Mdim):
             Mat[i][j] = normalized_mutual_info_score(f1[i],f2[j])
         sys.stdout.write(".")
         g=open(output_dir+'/'+'CorrMatrix_'+mla+'_'+str(Mdim)+'_'+str(GPS)+'_'+nfilename+'.txt','a')
-        if j==Mdim:
+        if j==Mdim-1:
             g.write(str(Mat[i][j]))
             g.write('\n')
         else:
